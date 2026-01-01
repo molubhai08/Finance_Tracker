@@ -11,7 +11,7 @@ Button.addEventListener('click' , () => {
     const num_val = document.getElementById("num").value ;
     const type_val = document.getElementById("type").value ;
 
-    fetch("https://script.google.com/macros/s/AKfycbw7KO9tYPzkSgTJue83HxGwajP8evtHHBD_BBrVJisbZzEvzeQ-66mkGtvF3-MiUfKE0w/exec", {
+    fetch("", {
         method: "POST",
         body: JSON.stringify({
             date: date_val , 
@@ -37,7 +37,7 @@ Button.addEventListener('click' , () => {
 
 } )
 
-const API_URL = "https://script.google.com/macros/s/AKfycbw7KO9tYPzkSgTJue83HxGwajP8evtHHBD_BBrVJisbZzEvzeQ-66mkGtvF3-MiUfKE0w/exec";
+const API_URL = "";
 
 let allData = [];
 let pieChart;
