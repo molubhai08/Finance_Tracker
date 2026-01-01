@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .kpi-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .kpi-card h3 {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .kpi-card .amount {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .chart-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 350px;
+        }
+
+        .controls-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .control-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #11998e;
+            background-color: white;
+        }
+
+        .slider-container {
+            width: 100%;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #11998e;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #11998e;
+            cursor: pointer;
+            border: none;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #11998e;
+            background-color: white;
+        }
+
+        .days-label {
+            display: inline-block;
+            margin-top: 8px;
+            color: #11998e;
+            font-weight: 600;
+        }
+
+        .transactions-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        #descriptionList {
+            list-style: none;
+        }
+
+        #descriptionList li {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #11998e;
+            transition: all 0.3s ease;
+        }
+
+        #descriptionList li:hover {
+            background: #e8f5f3;
+            transform: translateX(5px);
+        }
+
+        .tracker-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #11998e;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }
+
+        .tracker-btn:hover {
+            background: white;
+            transform: translateY(2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            .controls-section {
+                flex-direction: column;
+            }
+
+            .tracker-btn {
+                bottom: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Finance Dashboard</h1>
+
+        <!-- KPI SECTION -->
+        <section class="kpi-section">
+            <div class="kpi-card">
+                <h3>Total Spent</h3>
+                <div class="amount">₹<span id="kpiTotal">0</span></div>
+            </div>
+            <div class="kpi-card">
+                <h3>Leisure</h3>
+                <div class="amount">₹<span id="kpiLeisure">0</span></div>
+            </div>
+            <div class="kpi-card">
+                <h3>Important</h3>
+                <div class="amount">₹<span id="kpiImportant">0</span></div>
+            </div>
+        </section>
+
+        <!-- PIE CHART -->
+        <section class="chart-section">
+            <canvas id="pieChart" width="300" height="300"></canvas>
+        </section>
+
+        <!-- CONTROLS -->
+        <section class="controls-section">
+            <div class="control-group">
+                <label>Filter by Type</label>
+                <select id="typeSelect">
+                    <option value="All">All</option>
+                    <option value="Leisure">Leisure</option>
+                    <option value="Important">Important</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Time Period</label>
+                <select id="dateFilterType">
+                    <option value="all">All Transactions</option>
+                    <option value="range">Date Range</option>
+                    <option value="single">Single Date</option>
+                </select>
+            </div>
+
+            <div class="control-group" id="dateRangeControls" style="display: none;">
+                <label>From Date</label>
+                <input type="date" id="fromDate">
+                <label style="margin-top: 10px;">To Date</label>
+                <input type="date" id="toDate">
+            </div>
+
+            <div class="control-group" id="singleDateControls" style="display: none;">
+                <label>Select Date</label>
+                <input type="date" id="singleDate">
+            </div>
+        </section>
+
+        <!-- TRANSACTIONS -->
+        <section class="transactions-section">
+            <h3>Recent Transactions</h3>
+            <ul id="descriptionList"></ul>
+        </section>
+    </div>
+
+    <a href="index.html" class="tracker-btn">Add Entry</a>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbw7KO9tYPzkSgTJue83HxGwajP8evtHHBD_BBrVJisbZzEvzeQ-66mkGtvF3-MiUfKE0w/exec";
+
+        let allData = [];
+        let pieChart;
+
+        // Load data
+        async function loadData() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                
+                console.log("Raw data from API:", data);
+                
+                // Check if data is valid
+                if (!data || !Array.isArray(data)) {
+                    console.error("Invalid data format received");
+                    document.querySelector('.transactions-section').innerHTML += 
+                        '<p style="color: red;">Error: Invalid data format</p>';
+                    return;
+                }
+                
+                // Normalize the data by trimming keys
+                allData = data.map(item => {
+                    const normalized = {};
+                    for (let key in item) {
+                        const cleanKey = key.trim().replace(/\s+/g, ' ');
+                        if (cleanKey.includes('Date')) normalized.Date = item[key];
+                        else if (cleanKey.includes('Description')) normalized.Description = item[key];
+                        else if (cleanKey.includes('Amount')) normalized.Amount = item[key];
+                        else if (cleanKey.includes('Type')) normalized.Type = item[key];
+                    }
+                    return normalized;
+                });
+                
+                console.log("Normalized data:", allData);
+                
+                if (allData.length === 0) {
+                    document.querySelector('.transactions-section').innerHTML += 
+                        '<p style="color: #666;">No transactions found. Add some entries first!</p>';
+                }
+                
+                updateDashboard();
+            } catch (error) {
+                console.error("Error loading data:", error);
+                document.querySelector('.transactions-section').innerHTML += 
+                    '<p style="color: red;">Error loading data: ' + error.message + '</p>';
+            }
+        }
+
+        // Filter by days
+        function filterByDate(data, filterType, fromDate, toDate, singleDate) {
+            if (filterType === 'all') {
+                return data;
+            }
+            
+            if (filterType === 'single' && singleDate) {
+                const targetDate = new Date(singleDate).toDateString();
+                return data.filter(d => {
+                    const entryDate = new Date(d.Date).toDateString();
+                    return entryDate === targetDate;
+                });
+            }
+            
+            if (filterType === 'range' && fromDate && toDate) {
+                const from = new Date(fromDate);
+                const to = new Date(toDate);
+                to.setHours(23, 59, 59, 999); // Include the entire end date
+                
+                return data.filter(d => {
+                    const entryDate = new Date(d.Date);
+                    return entryDate >= from && entryDate <= to;
+                });
+            }
+            
+            return data;
+        }
+
+        // KPIs
+        function calculateKPIs(data) {
+            let total = 0, leisure = 0, important = 0;
+
+            console.log("Calculating KPIs for:", data);
+
+            data.forEach(d => {
+                const amt = Number(d.Amount || 0);
+                const type = (d.Type || '').trim();
+                
+                total += amt;
+                if (type === "Leisure") leisure += amt;
+                if (type === "Important") important += amt;
+            });
+
+            console.log("KPIs:", { total, leisure, important });
+            return { total, leisure, important };
+        }
+
+        // Pie chart
+        function renderPie(data) {
+            const totals = { Leisure: 0, Important: 0 };
+
+            data.forEach(d => {
+                const type = (d.Type || '').trim();
+                const amount = Number(d.Amount || 0);
+                if (type === "Leisure") {
+                    totals.Leisure += amount;
+                } else if (type === "Important") {
+                    totals.Important += amount;
+                }
+            });
+
+            console.log("Pie chart data:", totals);
+
+            pieChart?.destroy();
+
+            pieChart = new Chart(document.getElementById("pieChart"), {
+                type: "pie",
+                data: {
+                    labels: ["Leisure", "Important"],
+                    datasets: [{
+                        data: [totals.Leisure, totals.Important],
+                        backgroundColor: ['#38ef7d', '#11998e'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: { 
+                    animation: true,
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // KPIs UI
+        function renderKPIs(data) {
+            const kpi = calculateKPIs(data);
+            document.getElementById('kpiTotal').textContent = kpi.total.toFixed(2);
+            document.getElementById('kpiLeisure').textContent = kpi.leisure.toFixed(2);
+            document.getElementById('kpiImportant').textContent = kpi.important.toFixed(2);
+        }
+
+        // Descriptions
+        function renderDescriptions(data) {
+            const descriptionList = document.getElementById('descriptionList');
+            descriptionList.innerHTML = "";
+            
+            console.log("Rendering descriptions for:", data);
+            
+            if (data.length === 0) {
+                descriptionList.innerHTML = "<li style='border-left: 4px solid #ccc;'>No transactions found for this filter</li>";
+                return;
+            }
+            
+            data.forEach(d => {
+                const li = document.createElement("li");
+                const date = new Date(d.Date).toLocaleDateString() || 'N/A';
+                const desc = d.Description || 'No description';
+                const amount = Number(d.Amount || 0);
+                const type = (d.Type || '').trim();
+                
+                li.textContent = `${date} - ${desc} — ₹${amount.toFixed(2)} (${type})`;
+                descriptionList.appendChild(li);
+            });
+        }
+
+        // Dashboard controller
+        function updateDashboard() {
+            let filtered = [...allData];
+
+            // Date filter
+            const filterType = document.getElementById('dateFilterType').value;
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            const singleDate = document.getElementById('singleDate').value;
+            
+            filtered = filterByDate(filtered, filterType, fromDate, toDate, singleDate);
+
+            // Type filter
+            const type = document.getElementById('typeSelect').value;
+            if (type !== "All") {
+                filtered = filtered.filter(d => (d.Type || '').trim() === type);
+            }
+
+            console.log("Filtered data:", filtered);
+
+            renderPie(filtered);
+            renderKPIs(filtered);
+            renderDescriptions(filtered);
+        }
+
+        // Show/hide date controls based on selection
+        function toggleDateControls() {
+            const filterType = document.getElementById('dateFilterType').value;
+            const dateRangeControls = document.getElementById('dateRangeControls');
+            const singleDateControls = document.getElementById('singleDateControls');
+            
+            dateRangeControls.style.display = filterType === 'range' ? 'block' : 'none';
+            singleDateControls.style.display = filterType === 'single' ? 'block' : 'none';
+            
+            updateDashboard();
+        }
+
+        // Events
+        document.getElementById('typeSelect').addEventListener("change", updateDashboard);
+        document.getElementById('dateFilterType').addEventListener("change", toggleDateControls);
+        document.getElementById('fromDate').addEventListener("change", updateDashboard);
+        document.getElementById('toDate').addEventListener("change", updateDashboard);
+        document.getElementById('singleDate').addEventListener("change", updateDashboard);
+
+        // Init
+        loadData();
+    </script>
+</body>
+</html>
