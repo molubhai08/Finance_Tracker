@@ -339,7 +339,10 @@
                     return normalized;
                 });
                 
-                console.log("Normalized data:", allData);
+                // Sort by date (newest first) immediately after loading
+                allData.sort((a, b) => new Date(b.Date) - new Date(a.Date));
+                
+                console.log("Normalized and sorted data:", allData);
                 
                 if (allData.length === 0) {
                     document.querySelector('.transactions-section').innerHTML += 
@@ -469,7 +472,12 @@
                 return;
             }
             
-            data.forEach(d => {
+            // Sort by date (newest first)
+            const sortedData = [...data].sort((a, b) => {
+                return new Date(b.Date) - new Date(a.Date);
+            });
+            
+            sortedData.forEach(d => {
                 const li = document.createElement("li");
                 const date = new Date(d.Date).toLocaleDateString() || 'N/A';
                 const desc = d.Description || 'No description';
